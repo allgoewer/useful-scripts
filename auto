@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import yaml
+import json
+import urllib.request
+from collections import namedtuple
+
+Location        = namedtuple("Location", "lat lng")
+Station         = namedtuple("Station", "id name")
+PriceResponse   = namedtuple("PriceResponse", "status e5 e10 diesel")
+StationResponse = namedtuple("StationResponse",
+                             ("id name brand street place lat lng dist diesel "
+                              "e5 e10 isOpen houseNumber postCode"))
+DetailResponse  = namedtuple("DetailResponse",
+                             ("id name brand street houseNumber postCode place "
+                              "openingTimes overrides wholeDay isOpen e5 e10 "
+                              "diesel lat lng state"))
+
+
+
+class Fuel:
+    _URL_BASE  = "https://creativecommons.tankerkoenig.de/json/"
+    URL_LIST   = _URL_BASE + (
+                 "list.php?lat={loc.lat}&lng={loc.lng}"
+                 "&rad={rad}&type={type}&sort={sort}"
+                 "&apikey={apikey}")
+    URL_PRICES = _URL_BASE + ("prices.php?ids={ids_string}&apikey={apikey}")
+    URL_DETAIL = _URL_BASE + ("detail.php?id={id}&apikey={apikey}")
+
+    def __init__(self, key):
+        self._key = key
+
+    def list(self, loc, rad, sort="dist"):
+        assert sort in ("dist", "price")
+
+        answer = urllib.request.urlopen(self.URL_LIST.format(
+            loc=loc, rad=rad, type="all", sort=sort, apikey=self._key))
+        d = json.load(answer)
+        
+        return [StationResponse(**s) for s in d["stations"]]
+
+    def prices(self, stations):
+        if len(stations) > 10:
+            raise ValueError("len(stations) > 10")
+
+        answer = urllib.request.urlopen(self.URL_PRICES.format(
+            ids_string=",".join(s.id for s in stations), apikey=self._key))
+        d = json.load(answer)
+        
+        return {item[0]: PriceResponse(**item[1])
+                for item in d["prices"].items()}
+        
+    def detail(self, station):
+        answer = urllib.request.urlopen(self.URL_DETAIL.format(
+            id=station, apikey=self._key))
+        d = json.load(answer)
+        
+        return DetailResponse(**d["station"])
+
+
+
+class Traffic:
+    _URL_BASE = "https://route.api.here.com/routing/7.2/"
+    URL_ROUTING = _URL_BASE + (
+                  "calculateroute.json"
+                  "?app_id={app_id}"
+                  "&app_code={app_code}"
+                  "&mode=fastest;car;traffic:disabled"
+                  "&{waypoints}")
+
+    Duration = namedtuple("Duration", "ideal delay")
+    
+    def __init__(self, app_id, app_code):
+        self._app_id = app_id
+        self._app_code = app_code
+        
+    def duration(self, waypoints):        
+        waypoint_string = "&".join(
+            "waypoint{}={wp.lat},{wp.lng}".format(i, wp=wp)
+             for i, wp in enumerate(waypoints))
+        answer = urllib.request.urlopen(self.URL_ROUTING.format(
+            app_id=self._app_id, app_code=self._app_code,
+            waypoints=waypoint_string))
+        d = json.load(answer)
+        summary = d["response"]["route"][0]["summary"]
+
+        
+        return self.Duration(ideal=round(summary["baseTime"] / 60),
+                             delay=round(summary["trafficTime"] / 60))
+
+    
+if __name__ == "__main__":
+    with open(os.path.expanduser('~/.auto.yaml')) as f:
+        config = yaml.load(f)
+    
+    f = Fuel(config["gas"]["auth"])
+    t = Traffic(*config["traffic"]["auth"])    
+
+    print("=========== Verkehr ==================================================")
+    routes = [[(Location(location["lat"], location["long"]), location["name"])
+              for location in waypoint] 
+              for waypoint in config["traffic"]["routes"]]
+    
+    for r in routes:
+        dur = t.duration(l[0] for l in r)
+        route_string = " -> ".join(l[1] for l in r)
+        if dur.delay > dur.ideal:
+            info_string = "{:50.50s}: {:>5d} min ({:+4d})".format(
+                route_string, dur.delay, dur.delay-dur.ideal)
+        else:
+            info_string = "{:50.50s}: {:>5d} min".format(
+                route_string, dur.delay)
+
+        print(info_string)
+
+
+    print("=========== Tankstellen ==============================================")
+
+    stations = f.list(Location(config["gas"]["location"]["lat"],
+                               config["gas"]["location"]["long"]),
+                      config["gas"]["location"]["radius"])
+    stations = [s for s in stations if s.e5 is not None]
+    stations.sort(key=lambda s: s.e5)
+
+    for s in stations[:5]:
+        print("{:<10.10s}, {:<20.20s}, {:<10.10s}, E5 = {:>6.3f} €, ({:4.2f} km)".format(
+            s.brand, s.street.title()
+	    + " " + s.houseNumber, s.place.title(), s.e5, s.dist))

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ps hux | fzf -m | awk '{ print $2 }' | xargs -r kill -9

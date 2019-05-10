@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+selected_cmd=$(tail -n 10 ~/.zsh_history | cut -d ';' -f 1 --complement | fzf)
+
+if [ -n "${selected_cmd}" ] ; then
+    out_file=$(mktemp --suffix _fclip)
+
+    eval "${selected_cmd}" > "${out_file}"
+    xclip -selection clipboard "${out_file}"
+
+    rm "${out_file}"
+fi

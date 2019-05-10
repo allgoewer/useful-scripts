@@ -1,0 +1,3 @@
+#!/bin/sh
+
+qrencode -t ansiutf8 -m2 -o - $@
