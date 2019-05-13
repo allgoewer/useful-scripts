@@ -1,6 +1,6 @@
 #!/bin/sh
 
-selected_cmd=$(tail -n 10 ~/.zsh_history | cut -d ';' -f 1 --complement | fzf)
+selected_cmd=$(tail -n 10 ~/.zsh_history | cut -d ';' -f 1 --complement | fzf --tac)
 
 if [ -n "${selected_cmd}" ] ; then
     out_file=$(mktemp --suffix _fclip)
