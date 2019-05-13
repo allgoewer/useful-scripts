@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 
 selected_cmd=$(tail -n 10 ~/.zsh_history | cut -d ';' -f 1 --complement | fzf)
 
