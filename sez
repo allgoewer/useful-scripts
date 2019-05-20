@@ -6,5 +6,5 @@ if [ ! -f "$1" ] ; then
 fi
 
 echo "base64 -d <<E-F | gzip -d > \"$1\"
-$(gzip -c "$1" | base64)
+$(gzip -cn "$1" | base64)
 E-F"
