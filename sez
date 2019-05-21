@@ -5,6 +5,7 @@ if [ ! -f "$1" ] ; then
     exit 1
 fi
 
-echo "base64 -d <<E-F | gzip -d > \"$1\"
+echo "#!/bin/sh
+base64 -d <<E-F | gzip -d > \"$1\"
 $(gzip -cn "$1" | base64)
 E-F"
