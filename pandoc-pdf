@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for f in "$@"
+do
+    pandoc -o $(basename -s .md "$1").pdf --template eisvogel "$f"
+done

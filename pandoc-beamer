@@ -1,0 +1,10 @@
+#!/bin/sh
+
+common_options="-t beamer -V theme:metropolis -V themeoptions:background=dark"
+
+for f in "$@"
+do
+    pandoc $common_options -V aspectratio:43 -o $(basename -s .md "$f")-beamer-43.pdf "$f"
+    pandoc $common_options -V aspectratio:169 -o $(basename -s .md "$f")-beamer-169.pdf "$f"
+    pandoc $common_options -V aspectratio:1610 -o $(basename -s .md "$f")-beamer-1610.pdf "$f"
+done
