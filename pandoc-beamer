@@ -1,6 +1,16 @@
 #!/bin/sh
 
-common_options="-t beamer -V theme:metropolis -V themeoptions:background=dark"
+# example metadata for markdown file:
+#
+# ---
+# author: Maik
+# title: Awesone presentation
+#
+# themeoptions:
+#   - background=dark (light, dark)
+#   - numbering=fraction (counter, none, fraction)
+
+common_options="-t beamer -V theme:metropolis"
 
 for f in "$@"
 do
