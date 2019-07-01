@@ -4,11 +4,19 @@ set -e
 
 
 unmount () {
-    for f in $* ; do
+    for f in $(lsblk -lpno NAME | grep -oE "^$1.+$") ; do
         printf "Unmounting %s.. " "$f"
         udisksctl unmount --no-user-interaction --force -b "$f" >/dev/null
         printf "OK\n"
     done
+
+    sleep 1
+
+    if [ $(lsblk -lpno NAME | grep -oE "^$1$") ] ; then
+        printf "Removing loop-device %s.. " "$1"
+        udisksctl loop-delete --no-user-interaction -b "$1" >/dev/null
+        printf "OK\n"
+    fi
 }
 
 mount () {
@@ -25,7 +33,7 @@ fi
 
 mount "$1"
 if [ "${dev}" ] ; then
-    trap "unmount ${dev}p*" EXIT
+    trap "unmount ${dev}" EXIT
     sleep 1
 fi
 
