@@ -11,13 +11,13 @@ unmount () {
 set -e
 
 if [ ! -f "$1" ] ; then
-    echo "usage: $0 ISO_IMAGE" 2>&1
+    echo "usage: $0 IMAGE" 2>&1
     exit 1
 fi
 
 
 printf "Mounting loop device.. "
-dev=$(udisksctl loop-setup --no-user-interaction -f "$1" | grep -o "/dev/[a-zA-Y0-9]*")
+dev=$(udisksctl loop-setup --no-user-interaction -f "$1" | grep -o "/dev/loop[0-9]*")
 trap "unmount ${dev}p*" EXIT
 sleep 1
 printf "%s\n" "$dev"
