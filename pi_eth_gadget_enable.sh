@@ -1,5 +1,13 @@
 #!/bin/sh
 
+unmount () {
+    for f in $* ; do
+        printf "Unmounting %s.. " "$f"
+        udisksctl unmount --no-user-interaction --force -b "$f" >/dev/null
+        printf "OK\n"
+    done
+}
+
 set -e
 
 if [ ! -f "$1" ] ; then
@@ -7,44 +15,29 @@ if [ ! -f "$1" ] ; then
     exit 1
 fi
 
-if [ $(id -u) != 0 ] ; then
-    echo "must be run as root" 2>&1
-    exit 1
-fi
-
 
 printf "Mounting loop device.. "
-dev=$(losetup -fP --show "$1")
+dev=$(udisksctl loop-setup --no-user-interaction -f "$1" | grep -o "/dev/[a-zA-Y0-9]*")
+trap "unmount ${dev}p*" EXIT
 sleep 1
 printf "%s\n" "$dev"
 
-part=$(lsblk -lpno NAME,FSTYPE "${dev}" | awk '/.*vfat/ { print $1 }')
-printf "Found vfat partition on %s\n" "$part"
 
-printf "Mounting %s in /mnt.. " "$part"
-mount "$part" /mnt
-printf "OK\n"
+dir=$(lsblk -lpno MOUNTPOINT,FSTYPE "${dev}" | awk '/.*vfat/ { print $1 }')
+printf "Found vfat partition in %s\n" "$dir"
 
-if [ ! -f /mnt/g_ether_enabled ] ; then
-    printf "Enabling ethernet gadget.."
+if [ ! -f "${dir}/g_ether_enabled" ] ; then
+    printf "Enabling ethernet gadget.. "
 
     tmpfile=$(mktemp)
     sed "s/rootwait quiet/rootwait modules-load=dwc2,g_ether quiet/" \
-        /mnt/cmdline.txt > "$tmpfile"
-    mv "$tmpfile" /mnt/cmdline.txt
+        "${dir}/cmdline.txt" > "$tmpfile"
+    mv "$tmpfile" "${dir}/cmdline.txt"
 
-    echo 'dtoverlay=dwc2' >> /mnt/config.txt
-    touch /mnt/g_ether_enabled
+    echo 'dtoverlay=dwc2' >> "${dir}/config.txt"
+    touch "${dir}/g_ether_enabled"
 
     printf "OK\n"
 else
     printf "\e[31;40mEthernet gadget already enabled\n\e[0m"
 fi
-
-printf "Unmounting %s.. " "$part"
-umount "$part"
-printf "OK\n"
-
-printf "Removing loop device %s.. " "$dev"
-losetup -d "$dev"
-printf "OK\n"
