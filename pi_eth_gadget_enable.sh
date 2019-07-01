@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -e
+
+
 unmount () {
     for f in $* ; do
         printf "Unmounting %s.. " "$f"
@@ -8,22 +11,29 @@ unmount () {
     done
 }
 
-set -e
+mount () {
+    printf "Mounting loop device.. "
+    dev=$(udisksctl loop-setup --no-user-interaction -f "$1" | grep -o "/dev/loop[0-9]*")
+    printf "%s\n" "$dev"
+}
+
 
 if [ ! -f "$1" ] ; then
     echo "usage: $0 IMAGE" 2>&1
     exit 1
 fi
 
-
-printf "Mounting loop device.. "
-dev=$(udisksctl loop-setup --no-user-interaction -f "$1" | grep -o "/dev/loop[0-9]*")
-trap "unmount ${dev}p*" EXIT
-sleep 1
-printf "%s\n" "$dev"
-
+mount "$1"
+if [ "${dev}" ] ; then
+    trap "unmount ${dev}p*" EXIT
+    sleep 1
+fi
 
 dir=$(lsblk -lpno MOUNTPOINT,FSTYPE "${dev}" | awk '/.*vfat/ { print $1 }')
+if [ ! -d "${dir}" ] ; then
+    echo "No vfat partition found" 2>&1
+    exit 1
+fi
 printf "Found vfat partition in %s\n" "$dir"
 
 if [ ! -f "${dir}/g_ether_enabled" ] ; then
