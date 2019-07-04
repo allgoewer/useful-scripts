@@ -1,0 +1,13 @@
+#!/bin/sh
+
+astyle \
+    --style=allman \
+    --indent=spaces=4 \
+    --min-conditional-indent=0 \
+    --break-blocks \
+    --pad-oper \
+    --pad-comma \
+    --pad-header \
+    --align-pointer=type \
+    --break-one-line-headers \
+    $@
