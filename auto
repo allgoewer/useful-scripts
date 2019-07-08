@@ -92,7 +92,7 @@ class Traffic:
 
     
 if __name__ == "__main__":
-    with open(os.path.expanduser('~/.auto.yaml')) as f:
+    with open(os.path.expanduser('~/.config/scripts/auto.yaml')) as f:
         config = yaml.load(f)
     
     f = Fuel(config["gas"]["auth"])
