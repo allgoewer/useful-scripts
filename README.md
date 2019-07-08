@@ -4,6 +4,7 @@ More or less useful scripts
 * auto: Display traffic & fuel prices
 * cstyle: Format C-code using astyle
 * fclip: Replay shell commands and pipe output to clipboard
+* fish-fclip: Replay shell commands and pipe output to clipboard (for fish)
 * fkill: Kill processes (via fzf)
 * git-ignore: Fetch gitignore files from gitignore.io
 * gitn: git --no-pager

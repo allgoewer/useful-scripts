@@ -1,0 +1,12 @@
+#!/usr/bin/fish
+
+set -l selected_cmd (history -n 10 | fzf)
+
+if [ -n "$selected_cmd" ]
+    set -l out_file (mktemp --suffix _fclip)
+
+    eval "$selected_cmd" > "$out_file"
+    xclip -selection clipboard "$out_file"
+
+    rm "$out_file"
+end
