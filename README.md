@@ -12,6 +12,7 @@ More or less useful scripts
 * pandoc-beamer: Generate pdf presentation from pandoc markdown
 * pandoc-pdf: Generate pdf from pandoc markdown
 * pi_eth_gadget_enable.sh: Enable ethernet gadget in raspbian iso
+* push: Send push messages via Pushover
 * qr: Display qr-code in shell
 * qrc: Display clipboard as qr-code in shell
 * qrp: Display selection as qr-code in shell

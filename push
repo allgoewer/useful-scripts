@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse
+import os
+import requests
+import sys
+import toml
+
+
+def update_config_from_args(config):
+    parser = argparse.ArgumentParser(description="Push via pushover")
+    parser.add_argument("--priority", choices=[-2, -1, 0, 1], type=int,
+            help="The prioriy of the message")
+    parser.add_argument("--token", type=str,
+            help="The application token")
+    parser.add_argument("--user", type=str,
+            help="The user token")
+    parser.add_argument("--title", type=str, help="The message's title")
+    parser.add_argument("--monospace", action="store_const", const=1,
+            help="Display message with monospace font")
+    parser.add_argument("message", type=str, nargs="+",
+            help="The message")
+
+    parsed = vars(parser.parse_args())
+    parsed = { k:v for k, v in parsed.items() if v is not None}
+    parsed["message"] = os.linesep.join(parsed["message"])
+
+    return {**config['default'], **config['access'], **parsed }
+
+
+def push(config):
+    try:
+        response = requests.post("https://api.pushover.net/1/messages.json", data=config)
+    except requests.exceptions.ConnectionError as e:
+        print(e, file=sys.stderr)
+        return 1
+
+    if not response.ok:
+        print(response.reason, file=sys.stderr)
+
+    json = response.json()
+    if json['status'] == 1:
+        return 0
+    else:
+        print(json, file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    with open(os.path.expanduser("~/.config/scripts/push.toml")) as f:
+        config = toml.load(f)
+
+    exit(push(update_config_from_args(config)))
