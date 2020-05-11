@@ -7,6 +7,8 @@ More or less useful scripts
 * fish-fclip: Replay shell commands and pipe output to clipboard (for fish)
 * fkill: Kill processes (via fzf)
 * git-ignore: Fetch gitignore files from gitignore.io
+* git-ffshow: Filter and preview git commits with fzf
+* git-fflog: Get commits with previews via fzf
 * gitn: git --no-pager
 * mit: generate mit license
 * pandoc-beamer: Generate pdf presentation from pandoc markdown
