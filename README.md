@@ -19,4 +19,5 @@ More or less useful scripts
 * qrc: Display clipboard as qr-code in shell
 * qrp: Display selection as qr-code in shell
 * sez: Generate **s**elf-**e**xtracting g**z**ip file
+* twitch: Stream twitch with streamlink & mpv
 * uni: Output unicode character by name (uni rocket)

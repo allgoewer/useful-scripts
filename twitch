@@ -1,0 +1,3 @@
+#!/bin/sh
+
+streamlink --player mpv "https://www.twitch.tv/$1" best
