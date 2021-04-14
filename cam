@@ -1,0 +1,14 @@
+#!/bin/sh
+
+host=tapomaik
+user=user1391
+pw=12345678
+
+play() {
+    mpv --profile=low-latency "rtsp://${user}:${pw}@${host}:554/stream${1}"
+}
+
+case "$1" in
+    low) play 2;;
+    high|*) play 1;;
+esac
