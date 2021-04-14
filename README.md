@@ -2,6 +2,7 @@ More or less useful scripts
 ===========================
 
 * auto: Display traffic & fuel prices
+* cam: Display tapo camera feed with mpv
 * cstyle: Format C-code using astyle
 * fclip: Replay shell commands and pipe output to clipboard
 * fish-fclip: Replay shell commands and pipe output to clipboard (for fish)
