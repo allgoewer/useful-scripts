@@ -30,12 +30,11 @@ for s in $SOURCES ; do
     src="$(echo "$s" | cut -d @ -f 1)"
     rev="$(echo "$s" | cut -d @ -f 2)"
 
-    echo "Fetching $(basename "$src").."
     (
         cd src/
-        git clone -q "$src" "$(basename "$src")"
+        git clone "$src" "$(basename "$src")"
         cd "$(basename "$src")"
-        git checkout -q "$rev"
+        git checkout "$rev"
     )
 done
 
