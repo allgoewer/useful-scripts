@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# Example EASYBUILD
+#
+#
+# NAME=fancy-pants
+# PKGVER=0.1.0
+# PKGREL=1
+# SOURCE=(ssh://github.com/fancy-pants/fancy-pants@bf6fbc7dba8)
+#
+# build() {
+#     return
+# }
+#
+# package() {
+#     install -dm 0755 "$D"/etc/example.d/
+#     install -m 0600 "$S"/fancy-pants/README.md "$D"/etc/example.d/
+# }
+
+set -e
+
+. ./EASYBUILD
+
+mkdir -p src/
+mkdir -p pkg/
+
+for s in $SOURCE ; do
+    src="$(echo "$s" | cut -d @ -f 1)"
+    rev="$(echo "$s" | cut -d @ -f 2)"
+
+    echo "Fetching $(basename "$src").."
+    (
+        cd src/
+        git clone -q "$src" "$(basename "$src")"
+        cd "$(basename "$src")"
+        git checkout -q "$rev"
+    )
+done
+
+if [ $(type -t build) = "function" ] ; then
+    S="$(pwd)/src" build
+fi
+
+if [ $(type -t package) = "function" ] ; then
+    S="$(pwd)/src" D="$(pwd)/pkg" fakeroot -- /bin/sh -c ". ./EASYBUILD; package"
+fi
+
+echo $PKGVER
+fakeroot -- tar -C pkg/ -czf "${NAME}-${PKGVER}-${PKGREL}.tar.gz" --xform s:'./':: .
