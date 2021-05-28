@@ -19,6 +19,8 @@
 
 set -e
 
+unset NAME PKGVER PKGREL SOURCES
+
 . ./EASYBUILD
 
 mkdir -p src/
