@@ -45,5 +45,4 @@ if [ $(type -t package) = "function" ] ; then
     S="$(pwd)/src" D="$(pwd)/pkg" fakeroot -- /bin/sh -c ". ./EASYBUILD; package"
 fi
 
-echo $PKGVER
 fakeroot -- tar -C pkg/ -czf "${NAME}-${PKGVER}-${PKGREL}.tar.gz" --xform s:'./':: .
