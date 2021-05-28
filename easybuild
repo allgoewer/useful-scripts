@@ -13,7 +13,7 @@
 # }
 #
 # package() {
-#     install -dm 0755 "$D"/etc/example.d/
+#     install -m 0755 -d "$D"/etc/example.d/
 #     install -m 0600 "$S"/fancy-pants/README.md "$D"/etc/example.d/
 # }
 
