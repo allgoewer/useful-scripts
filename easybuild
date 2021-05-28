@@ -6,7 +6,7 @@
 # NAME=fancy-pants
 # PKGVER=0.1.0
 # PKGREL=1
-# SOURCE=(ssh://github.com/fancy-pants/fancy-pants@bf6fbc7dba8)
+# SOURCES=(ssh://github.com/fancy-pants/fancy-pants@bf6fbc7dba8)
 #
 # build() {
 #     return
@@ -24,7 +24,7 @@ set -e
 mkdir -p src/
 mkdir -p pkg/
 
-for s in $SOURCE ; do
+for s in $SOURCES ; do
     src="$(echo "$s" | cut -d @ -f 1)"
     rev="$(echo "$s" | cut -d @ -f 2)"
 
