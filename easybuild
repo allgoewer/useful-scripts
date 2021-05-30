@@ -26,6 +26,9 @@ unset NAME PKGVER PKGREL SOURCES
 mkdir -p src/
 mkdir -p pkg/
 
+export S="$(pwd)/src"
+export D="$(pwd)/pkg"
+
 for s in $SOURCES ; do
     src="$(echo "$s" | cut -d @ -f 1)"
     rev="$(echo "$s" | cut -d @ -f 2)"
@@ -39,11 +42,11 @@ for s in $SOURCES ; do
 done
 
 if [ $(type -t build) = "function" ] ; then
-    S="$(pwd)/src" build
+    build
 fi
 
 if [ $(type -t package) = "function" ] ; then
-    S="$(pwd)/src" D="$(pwd)/pkg" fakeroot -- /bin/sh -c ". ./EASYBUILD; package"
+    fakeroot -- /bin/sh -c ". ./EASYBUILD; package"
 fi
 
 fakeroot -- tar -C pkg/ -cazf "${NAME}-${PKGVER}-${PKGREL}.tar.gz" --xform s:'./':: .
