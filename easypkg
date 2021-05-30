@@ -18,6 +18,7 @@
 # }
 
 set -e
+set -o posix
 
 unset NAME PKGVER PKGREL SOURCES
 
