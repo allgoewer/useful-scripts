@@ -47,7 +47,7 @@ if [ $(type -t build) = "function" ] ; then
 fi
 
 if [ $(type -t package) = "function" ] ; then
-    fakeroot -- /bin/sh -c ". ./EASYPKG; package"
+    fakeroot -- /bin/sh -c "set -e; set -o posix; . ./EASYPKG; package"
 fi
 
 fakeroot -- tar -C pkg/ -cazf "${NAME}-${PKGVER}-${PKGREL:-1}.tar.gz" --xform s:'./':: .
