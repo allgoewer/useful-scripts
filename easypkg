@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Example EASYBUILD
+# Example EASYPKG
 #
 #
 # NAME=fancy-pants
@@ -21,7 +21,7 @@ set -e
 
 unset NAME PKGVER PKGREL SOURCES
 
-. ./EASYBUILD
+. ./EASYPKG
 
 mkdir -p src/
 mkdir -p pkg/
@@ -46,7 +46,7 @@ if [ $(type -t build) = "function" ] ; then
 fi
 
 if [ $(type -t package) = "function" ] ; then
-    fakeroot -- /bin/sh -c ". ./EASYBUILD; package"
+    fakeroot -- /bin/sh -c ". ./EASYPKG; package"
 fi
 
 fakeroot -- tar -C pkg/ -cazf "${NAME}-${PKGVER}-${PKGREL}.tar.gz" --xform s:'./':: .
