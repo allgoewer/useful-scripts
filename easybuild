@@ -42,7 +42,7 @@ for s in $SOURCES ; do
 done
 
 if [ $(type -t build) = "function" ] ; then
-    build
+    (build)
 fi
 
 if [ $(type -t package) = "function" ] ; then
