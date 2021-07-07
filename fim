@@ -1,0 +1,8 @@
+#!/bin/sh
+
+editor="${VISUAL:-$EDITOR}"
+
+[ -d "$1" ] &&
+    cd "$1"
+
+exec $editor $(fzf)
