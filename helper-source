@@ -1,0 +1,33 @@
+# set XDG_RUNTIME_DIR, useful when running via crontab
+[ -n "$XDG_RUNTIME_DIR" ] || export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+# notify the user, either via stdout or via notify-send
+notify() {
+    [ -n "$this_binary" ] || echo 'WARN: Set variable $this_binary for notify-send'
+
+    if tty -s ; then
+        echo "$@" >&2
+    else
+        notify-send "$this_binary" "$@"
+    fi
+}
+
+# the last part of a path
+# e.g.: a/b/cool_binary -> cool_binary
+this_name() {
+    echo "${1##*/}"
+}
+
+# ignore exit codes
+#
+# e.g.: assume we want to ignore exit codes 12 14 and 45
+# cmd .. .. ; ignore $? 12 14 45
+ignore() {
+    retval="$1"; shift
+
+    for code in $@ ; do
+        [ $retval = $code ] && return 0
+    done
+
+    return $retval
+}
