@@ -1,54 +1,53 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/bin/sh
 
-import argparse
-import os
-import requests
-import sys
-import toml
+this_binary=${0##*/}
+
+PO_URI="https://api.pushover.net/1/messages.json"
+source ~/.config/pushover/pushover.env
 
 
-def update_config_from_args(config):
-    parser = argparse.ArgumentParser(description="Push via pushover")
-    parser.add_argument("-p", "--priority", choices=[-2, -1, 0, 1], type=int,
-            help="The prioriy of the message")
-    parser.add_argument("-k", "--token", type=str,
-            help="The application token")
-    parser.add_argument("-u", "--user", type=str,
-            help="The user token")
-    parser.add_argument("-t", "--title", type=str, help="The message's title")
-    parser.add_argument("-m", "--monospace", action="store_const", const=1,
-            help="Display message with monospace font")
-    parser.add_argument("message", type=str, nargs="+",
-            help="The message")
+usage() {
+cat <<EOF
+Usage: $this_binary [OPTIONS]
 
-    parsed = vars(parser.parse_args())
-    parsed = { k:v for k, v in parsed.items() if v is not None}
-    parsed["message"] = os.linesep.join(parsed["message"])
+$this_binary sends a message via pushover.net
 
-    return {**config['default'], **config['access'], **parsed }
+  Options:
+    -h, --help      Print this help message.
+    -t, --title     Message title (optional, defaults to \$(whoami)@\$(hostname))
+    -b, --body      The message body (optional, defaults to stdin)
+    -m, --monospace Print the message in monospace
+EOF
+}
 
+opts=$(getopt -o ht:b:m -l help,title:,message:,body:,monospace -- "$@")
+[ $? -eq 0 ] || { usage ; exit 1; }
+eval set -- "$opts"
 
-def push(config):
-    try:
-        response = requests.post("https://api.pushover.net/1/messages.json", data=config)
-    except requests.exceptions.ConnectionError as e:
-        print(e, file=sys.stderr)
-        return 1
+while true ; do
+    case "$1" in
+        --title|-t) title="$2";;
+        --body|-b) body="$2";;
+        --monospace|-m) mono=1;;
+        --help|-h) usage; exit 0;;
+        --) break;;
+    esac
+    shift
+done
 
-    if not response.ok:
-        print(response.reason, file=sys.stderr)
+if [ -z "${body}" ] ; then
+    body="$(cat)"
+fi
 
-    json = response.json()
-    if json['status'] == 1:
-        return 0
-    else:
-        print(json, file=sys.stderr)
-        return 1
+if [ -z "${body}" ] ; then
+    echo message body must not be empty
+    usage
+    exit 1
+fi
 
-
-if __name__ == "__main__":
-    with open(os.path.expanduser("~/.config/scripts/push.toml")) as f:
-        config = toml.load(f)
-
-    exit(push(update_config_from_args(config)))
+curl --silent "${PO_URI}" \
+    --form-string "user=${PO_USER}" \
+    --form-string "token=${PO_TOKEN}" \
+    --form-string "monospace=${mono:-0}" \
+    --form-string "title=${title:-$(whoami)@$(hostname)}" \
+    --form-string "message=${body}"
