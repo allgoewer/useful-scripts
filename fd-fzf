@@ -1,0 +1,25 @@
+#!/bin/sh
+
+this_binary=${0##*/}
+
+help() {
+    cat <<EOF
+Usage: $this_binary SEARCH [CMD]
+
+    Needs fd and fzf in PATH.
+EOF
+}
+
+if [ -z "$1" ] ; then
+    help
+    exit 1
+fi
+
+if [ -n "$2" ] && [ -x "$(which $2 2>/dev/null)" ] ; then
+    search="$1"; cmd="$2"; shift 2
+    fd "$search" | fzf -m --bind "alt-enter:execute($cmd $@ {})"
+else
+    search="$1"; shift
+    fd "$search" | fzf -m --bind "alt-enter:execute(xdg-open {})"
+fi
+

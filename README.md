@@ -6,6 +6,7 @@ More or less useful scripts
 * cstyle: Format C-code using astyle
 * easybuild: Very simple build script (like makepkg)
 * fclip: Replay shell commands and pipe output to clipboard
+* fd-fzf: Pipe fd output into fzf and preview
 * fim: Open vim with the file(s) specified by fzf
 * fish-fclip: Replay shell commands and pipe output to clipboard (for fish)
 * fkill: Kill processes (via fzf)
