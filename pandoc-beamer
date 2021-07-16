@@ -9,12 +9,36 @@
 # themeoptions:
 #   - background=dark (light, dark)
 #   - numbering=fraction (counter, none, fraction)
+# ...
+#
+#
+# Call like so:
+#
+# pandoc-beamer presentation.md 1610 169 43
+#
+#
+# Or, with the following makefile and `make all`
+#
+# ```
+# all: presentation-43.pdf presentation-169.pdf presentation-1610.pdf
+#
+# %-43.pdf: %.md
+#     pandoc-beamer $< 43
+#
+# %-169.pdf: %.md
+#     pandoc-beamer $< 169
+#
+# %-1610.pdf: %.md
+#     pandoc-beamer $< 1610
+# ```
+#
 
 common_options="-t beamer -V theme:metropolis"
 
-for f in "$@"
+f="$1"; shift
+name="$(basename -s .md "$f")"
+
+for aspect in "$@"
 do
-    pandoc $common_options -V aspectratio:43 -o $(basename -s .md "$f")-beamer-43.pdf "$f"
-    pandoc $common_options -V aspectratio:169 -o $(basename -s .md "$f")-beamer-169.pdf "$f"
-    pandoc $common_options -V aspectratio:1610 -o $(basename -s .md "$f")-beamer-1610.pdf "$f"
+    pandoc $common_options -V aspectratio:"$aspect" -o "$name"-"$aspect".pdf "$f"
 done
