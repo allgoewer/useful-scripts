@@ -8,7 +8,7 @@ notify() {
     if tty -s ; then
         echo "$@" >&2
     else
-        notify-send "$this_binary" "$@"
+        notify-send -i "$notify_icon" "$this_binary" "$@"
     fi
 }
 
