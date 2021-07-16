@@ -3,7 +3,7 @@
 
 # notify the user, either via stdout or via notify-send
 notify() {
-    [ -n "$this_binary" ] || echo 'WARN: Set variable $this_binary for notify-send'
+    [ -n "$this_binary" ] || echo 'WARN: Set variable $this_binary for notify-send' >&2
 
     if tty -s ; then
         echo "$@" >&2
