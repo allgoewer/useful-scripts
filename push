@@ -5,6 +5,8 @@ this_binary=${0##*/}
 PO_URI="https://api.pushover.net/1/messages.json"
 source ~/.config/pushover/pushover.env
 
+priority=0
+
 
 usage() {
 cat <<EOF
@@ -16,11 +18,12 @@ $this_binary sends a message via pushover.net
     -h, --help      Print this help message.
     -t, --title     Message title (optional, defaults to \$(whoami)@\$(hostname))
     -b, --body      The message body (optional, defaults to stdin)
+    -p, --priority  The message priority (-2, -1, 0, 1, defaults to 0)
     -m, --monospace Print the message in monospace
 EOF
 }
 
-opts=$(getopt -o ht:b:m -l help,title:,message:,body:,monospace -- "$@")
+opts=$(getopt -o ht:b:p:m -l help,title:,message:,body:,priority:,monospace -- "$@")
 [ $? -eq 0 ] || { usage ; exit 1; }
 eval set -- "$opts"
 
@@ -28,12 +31,22 @@ while true ; do
     case "$1" in
         --title|-t) title="$2";;
         --body|-b) body="$2";;
+        --priority|-p) priority="$2";;
         --monospace|-m) mono=1;;
         --help|-h) usage; exit 0;;
         --) break;;
     esac
     shift
 done
+
+case $priority in
+    -2|-1|0|1) ;;
+    *)
+        echo "invalid priority"
+        usage
+        exit
+        ;;
+esac
 
 if [ -z "${body}" ] ; then
     body="$(cat)"
@@ -50,4 +63,5 @@ curl --silent "${PO_URI}" \
     --form-string "token=${PO_TOKEN}" \
     --form-string "monospace=${mono:-0}" \
     --form-string "title=${title:-$(whoami)@$(hostname)}" \
+    --form-string "priority=${priority}" \
     --form-string "message=${body}"
