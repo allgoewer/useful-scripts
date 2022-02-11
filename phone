@@ -1,0 +1,7 @@
+#!/bin/sh
+
+scrcpy \
+    --turn-screen-off \
+    --power-off-on-close \
+    --stay-awake \
+    --hid-keyboard
