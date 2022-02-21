@@ -3,6 +3,7 @@ More or less useful scripts
 
 * auto: Display traffic & fuel prices
 * cam: Display tapo camera feed with mpv
+* cimport: Import ARW/JPG/MP4 from camera
 * cstyle: Format C-code using astyle
 * easybuild: Very simple build script (like makepkg)
 * fclip: Replay shell commands and pipe output to clipboard

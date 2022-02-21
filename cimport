@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -e
+
+outdir=$HOME/camera
+
+find_camdir() {
+    result=$(find "/run/media/$USER/" -type d -name DCIM | head -n 1)
+    [ -n "${result}" ] || return 1
+    echo "${result}/../"
+}
+
+quit() {
+    code=$1; shift
+    echo $@
+    exit $code
+}
+
+camdir=$(find_camdir) || quit 1 "No camera directory found"
+echo "Found camera directory: ${camdir}"
+
+mkdir -p "${outdir}/raw" "${outdir}/jpg" "${outdir}/mp4"
+
+echo "Copying jpgs.."
+rsync -ruvP --include "*/" --include "*.JPG" --exclude "*" \
+    ${camdir}/DCIM/*/* "${outdir}/jpg/"
+
+echo "Coping raws.."
+rsync -ruvP --include "*/" --include "*.ARW" --exclude "*" \
+    ${camdir}/DCIM/*/* "${outdir}/raw/"
+
+echo "Copying mp4s.."
+rsync -ruvP --include "*/" --include "*.MP4" --exclude "*" \
+    ${camdir}/PRIVATE/M4ROOT/CLIP/* "${outdir}/mp4/"
