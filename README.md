@@ -2,6 +2,7 @@ More or less useful scripts
 ===========================
 
 * auto: Display traffic & fuel prices
+* backup: Backup via restic
 * cam: Display tapo camera feed with mpv
 * cstyle: Format C-code using astyle
 * easybuild: Very simple build script (like makepkg)
