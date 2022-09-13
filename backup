@@ -25,6 +25,10 @@ check() {
 	restic check
 }
 
+snapshots() {
+	restic snapshots
+}
+
 forget() {
 	restic forget \
 	--keep-daily 7 \
