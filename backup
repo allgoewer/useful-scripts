@@ -46,7 +46,7 @@ runparts() {
 	local mode="$1"
 
 	[ -d "$BACKUP_RUNPARTS" ] \
-		&& run-parts -v --umask 077 --arg "$1" "$BACKUP_RUNPARTS"
+		&& run-parts -v --umask 077 --arg "$mode" "$BACKUP_RUNPARTS"
 }
 
 backup() {
