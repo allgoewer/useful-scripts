@@ -56,7 +56,7 @@ backup() {
 	restic_backup || { echo "Backup failed"; exit 2; }
 	runparts post || { echo "Runparts post failed"; exit 4; }
 	forget || { echo "Forget failed"; exit 8; }
-	check || { echo "Check failed"; exit 16; }
+	restic check || { echo "Check failed"; exit 16; }
 }
 
 help() {
