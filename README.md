@@ -24,6 +24,7 @@ More or less useful scripts
 * qr: Display qr-code in shell
 * qrc: Display clipboard as qr-code in shell
 * qrp: Display selection as qr-code in shell
+* rename-heic: Rename iPhone photos (.heic) to have their exif creation date as filename
 * sez: Generate **s**elf-**e**xtracting g**z**ip file
 * twitch: Stream twitch with streamlink & mpv
 * uni: Output unicode character by name (uni rocket)
