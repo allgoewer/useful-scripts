@@ -4,4 +4,4 @@ scrcpy \
     --turn-screen-off \
     --power-off-on-close \
     --stay-awake \
-    --hid-keyboard
+    --keyboard=uhid
