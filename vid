@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd ~/Videos
+mpv "$(fd '.*webm' | fzf)"
