@@ -4,7 +4,9 @@ More or less useful scripts
 * auto: Display traffic & fuel prices
 * backup: Backup via restic
 * cam: Display tapo camera feed with mpv
+* coco: Display tapo camera for coco with mpv
 * cstyle: Format C-code using astyle
+* dynamic-http: Make a port on localhost available from the internet
 * easybuild: Very simple build script (like makepkg)
 * fclip: Replay shell commands and pipe output to clipboard
 * fd-fzf: Pipe fd output into fzf and preview
