@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Making port $1 available at https://dynamic.llgoewer.de"
+ssh -TR "$1":localhost:8080 elara
