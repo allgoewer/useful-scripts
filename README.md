@@ -18,6 +18,7 @@ More or less useful scripts
 * git-flog: Get commits with previews via fzf
 * gitn: git --no-pager
 * mit: generate mit license
+* manage-cert.sh: Manage Let's Encrypt certificates via DNS-01 and nsupdate
 * pandoc-beamer: Generate pdf presentation from pandoc markdown
 * pandoc-pdf: Generate pdf from pandoc markdown
 * pi_eth_gadget_enable.sh: Enable ethernet gadget in raspbian iso
