@@ -2,6 +2,7 @@ More or less useful scripts
 ===========================
 
 * auto: Display traffic & fuel prices
+* batt: Show battery info
 * backup: Backup via restic
 * cam: Display tapo camera feed with mpv
 * coco: Display tapo camera for coco with mpv
