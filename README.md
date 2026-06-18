@@ -2,6 +2,7 @@ More or less useful scripts
 ===========================
 
 * auto: Display traffic & fuel prices
+* atwitch: Automatically play one of several preconfigured twitch streams
 * batt: Show battery info
 * backup: Backup via restic
 * cam: Display tapo camera feed with mpv

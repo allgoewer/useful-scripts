@@ -1,0 +1,18 @@
+#!/bin/bash
+
+channels=(
+  "valieriumborn"
+  "wreakinghavoc"
+  "tightropexilo"
+  "froz3nsolider"
+  "flekz127"
+)
+
+
+for channel in "${channels[@]}"; do
+  twitch "$channel"
+
+  if [ $? -eq 0 ]; then
+    break
+  fi
+done
